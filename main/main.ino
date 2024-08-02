@@ -4,6 +4,7 @@
 #include "i2s_adc.h"
 #include "cloud.h"
 #include "tts.h"
+#include "action.h"
 
 const char* ssid = "Mangdang";
 const char* password = "mangdang";
@@ -20,7 +21,7 @@ void record_task(void* args) {
     // cloud_start_time = millis();
     // uploadFile();
     // gc_end_time = millis();
-    // duration = gc_end_time - cloud_start_time;
+    // duration = gc_end_t  ime - cloud_start_time;
     // Serial.print("upload(), took: ");
     // Serial.println(duration);
 
@@ -34,6 +35,10 @@ void record_task(void* args) {
 
     if (input_text != "") {  // ai response
       String ai_text = llm_response(input_text);
+      if (int(ai_text.indexOf("forward")) != -1) {
+        Servo_forward();
+        Serial.println("\n\nForwarding\n");
+      }
       ai_end_time = millis();
       duration = ai_end_time - stt_end_time;
       Serial.print("ai(), took: ");
@@ -58,6 +63,7 @@ void record_task(void* args) {
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting setup...");
+  Servo_Init();
 
   WiFi.begin(ssid, password);
   Serial.print("Connecting to Wi-Fi");
