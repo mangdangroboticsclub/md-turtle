@@ -1,3 +1,4 @@
+#include <action.h>
 #include <Arduino.h>
 #include <ESP32Servo.h>
 #include <Preferences.h>
@@ -16,8 +17,8 @@ Preferences preferences;
 
 int minUs = 500;
 int maxUs = 2500;
-int servo1Pin = 35;  // leftfront
-int servo2Pin = 36;  // leftback
+int servo1Pin = 36;  // leftfront
+int servo2Pin = 35;  // leftback
 int servo3Pin = 37;  // rightfront
 int servo4Pin = 38;  // rightback
 int servo5Pin = 39;  // head
@@ -103,11 +104,15 @@ void MoveInit() {
 void MoveReset() {
   Serial.println("MoveReset start");
   Serial.println("MoveReset servo write");
-  // servo1.write(180 * (220 - osang[1]) / 260);
-  // servo2.write(180 * (40 - osang[2]) / 260);
-  // servo3.write(180 * (40 + osang[3]) / 260);
-  // servo4.write(180 * (220 + osang[4]) / 260);
-  servo(0, 0, 0, 0, TIMES_WALK, SERVO_LOOP_DELAY);
+
+    servoLeftFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    delay(STEP_DELAY);
+    servoRightBack(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    delay(STEP_DELAY);
+    servoRightFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    delay(STEP_DELAY);
+    servoLeftBack(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    delay(STEP_DELAY);
 
   Serial.println("MoveReset servo5");
   // servo5.write(input_ang(5, 0));
@@ -192,20 +197,20 @@ void MoveForward(int step_delay, int loop_num) {
     Serial.println(i);
     servoLeftFront(15, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
-    servoRightBack(15, TIMES_WALK, TIMES_WALK);
+    servoRightBack(15, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
-    servoRightFront(-15, TIMES_WALK, TIMES_WALK);
+    servoRightFront(-15, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
-    servoLeftBack(-15, TIMES_WALK, TIMES_WALK);
+    servoLeftBack(-15, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
 
     servoLeftFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
-    servoRightBack(0, TIMES_WALK, TIMES_WALK);
+    servoRightBack(0, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
-    servoRightFront(0, TIMES_WALK, TIMES_WALK);
+    servoRightFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
-    servoLeftBack(0, TIMES_WALK, TIMES_WALK);
+    servoLeftBack(0, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
     // servo(15, 0, 0, 0, TIMES_WALK, SERVO_LOOP_DELAY);
     // servo(15, 0, 0, 15, TIMES_WALK, SERVO_LOOP_DELAY);

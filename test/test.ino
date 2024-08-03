@@ -149,8 +149,8 @@ void setup() {
   int file_duration, cur_audio_time;
   Audio* audio = nullptr;
   // Servo_Init();
-  MoveInit();
-  MoveReset();
+  // MoveInit();
+  // MoveReset();
   while (1) {
     if (Serial.available() > 0) {
       String text = Serial.readStringUntil('\n');
