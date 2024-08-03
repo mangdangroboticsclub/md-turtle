@@ -27,7 +27,7 @@ void talk_loop() {
     if (int(input_text.indexOf("come")) != -1) {
       tts("OK, my master!");
       Serial.println("forward start");
-      MoveForward(400);
+      MoveForward(200, 3);
       Serial.println("\n\nForwarding\n");
     } else {
       String ai_text = llm_response(input_text);

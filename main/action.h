@@ -5,7 +5,7 @@
 
 void MoveInit();
 void MoveReset();
-void MoveForward(int step_delay);
+void MoveForward(int step_delay, int loop_num);
 
 //just for debug
 void servo(float AngE1, float AngE2, float AngE3, float AngE4, int timewalk, int servo_delay);

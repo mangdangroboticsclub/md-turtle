@@ -186,8 +186,8 @@ void servoRightBack(float ange, int timewalk, int servo_delay) {
   Serial.println("servoRightBack end!");
 }
 
-void MoveForward(int step_delay) {
-  for (int i = 0; i < 3; i++) {
+void MoveForward(int step_delay, int loop_num) {
+  for (int i = 0; i < loop_num; i++) {
     Serial.print("MoveForward loop count:");
     Serial.println(i);
     servoLeftFront(15, TIMES_WALK, SERVO_LOOP_DELAY);
