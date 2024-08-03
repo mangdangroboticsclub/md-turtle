@@ -11,49 +11,38 @@ const char* password = "mangdang";
 
 unsigned long cloud_start_time, gc_end_time, stt_end_time, ai_end_time, duration;  // for delay
 
-void record_task(void* args) {
-  while (1) {
-    Serial.println("=================================Record start!=================================");
-    record();
-    Serial.println("Record end!");
 
-    // upload to google cloud
-    // cloud_start_time = millis();
-    // uploadFile();
-    // gc_end_time = millis();
-    // duration = gc_end_t  ime - cloud_start_time;
-    // Serial.print("upload(), took: ");
-    // Serial.println(duration);
+void talk_loop() {
+  Serial.println("=================================Record start!=================================");
+  record();
+  Serial.println("Record end!");
 
-    String input_text = "";
-    //speech to text
-    input_text = speechToText();
-    stt_end_time = millis();
-    duration = stt_end_time - gc_end_time;
-    Serial.print("speechToText(), took: ");
-    Serial.println(duration);
+  uploadFile();
 
-    if (input_text != "") {  // ai response
+  String input_text = "";
+  //speech to text
+  input_text = speechToText();
+
+  if (input_text != "") {  // ai response
+    if (int(input_text.indexOf("come")) != -1) {
+      tts("OK, my master!");
+      Serial.println("forward start");
+      MoveForward(400);
+      Serial.println("\n\nForwarding\n");
+    } else {
       String ai_text = llm_response(input_text);
-      if (int(ai_text.indexOf("forward")) != -1) {
-        Servo_forward();
-        Serial.println("\n\nForwarding\n");
-      }
-      ai_end_time = millis();
-      duration = ai_end_time - stt_end_time;
-      Serial.print("ai(), took: ");
-      Serial.println(duration);
-
-      duration = ai_end_time - cloud_start_time;
-      Serial.print("all took: ");
-      Serial.println(duration);
       if (ai_text != "") {  // text to speech
         tts(ai_text);
       }
-    } else {
-      tts("Hello, I am Amy!");
     }
-    // tts("I  am doing well, thank you for asking!");
+  }
+  // tts("I  am doing well, thank you for asking!");
+  delay(10);
+}
+
+void talk_task(void* args) {
+  while (1) {
+    talk_loop();
   }
   // delay(5000);
   // vTaskDelete(NULL);
@@ -63,7 +52,6 @@ void record_task(void* args) {
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting setup...");
-  Servo_Init();
 
   WiFi.begin(ssid, password);
   Serial.print("Connecting to Wi-Fi");
@@ -79,43 +67,11 @@ void setup() {
   } else {
     Serial.println("WiFi Disconnected");
   }
+
+  MoveInit();
+  MoveReset();
 }
 
 void loop() {
-  Serial.println("=================================Record start!=================================");
-  record();
-  Serial.println("Record end!");
-
-  // upload to google cloud
-  // cloud_start_time = millis();
-  uploadFile();
-  // gc_end_time = millis();
-  // duration = gc_end_time - cloud_start_time;
-  // Serial.print("upload(), took: ");
-  // Serial.println(duration);
-
-  String input_text = "";
-  //speech to text
-  input_text = speechToText();
-  // stt_end_time = millis();
-  // duration = stt_end_time - gc_end_time;
-  // Serial.print("speechToText(), took: ");
-  // Serial.println(duration);
-
-  if (input_text != "") {  // ai response
-    String ai_text = llm_response(input_text);
-    // ai_end_time = millis();
-    // duration = ai_end_time - stt_end_time;
-    // Serial.print("ai(), took: ");
-    // Serial.println(duration);
-
-    // duration = ai_end_time - cloud_start_time;
-    // Serial.print("all took: ");
-    // Serial.println(duration);
-    if (ai_text != "") {  // text to speech
-      tts(ai_text);
-    }
-  }
-  // tts("I  am doing well, thank you for asking!");
-  delay(10);
+  talk_loop();
 }
