@@ -196,14 +196,14 @@ void MoveForward(int step_delay) {
     delay(step_delay);
     servoRightFront(-15, TIMES_WALK, TIMES_WALK);
     delay(step_delay);
-    servoLeftBack(15, TIMES_WALK, TIMES_WALK);
+    servoLeftBack(-15, TIMES_WALK, TIMES_WALK);
     delay(step_delay);
 
     servoLeftFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
     servoRightBack(0, TIMES_WALK, TIMES_WALK);
     delay(step_delay);
-    servoRightBack(0, TIMES_WALK, TIMES_WALK);
+    servoRightFront(0, TIMES_WALK, TIMES_WALK);
     delay(step_delay);
     servoLeftBack(0, TIMES_WALK, TIMES_WALK);
     delay(step_delay);
