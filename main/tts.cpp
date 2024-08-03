@@ -65,6 +65,7 @@ void tts(String text) {
   audio->connecttohost(audioURL.c_str());
   unsigned long start_time = millis();
   int max_duration = 400 * countWords(text);
+  if (max_duration < 2500) max_duration = 2500;
   // Serial.print("max_duration: ");
   // Serial.println(max_duration);
 
