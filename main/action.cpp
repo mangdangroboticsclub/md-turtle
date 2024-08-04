@@ -5,7 +5,7 @@
 
 #define TIMES_WALK 1
 #define SERVO_LOOP_DELAY 1
-#define STEP_DELAY 1000
+#define STEP_DELAY 100
 
 Servo servo1;
 Servo servo2;
