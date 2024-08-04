@@ -17,8 +17,8 @@ Preferences preferences;
 
 int minUs = 500;
 int maxUs = 2500;
-int servo1Pin = 36;  // leftfront
-int servo2Pin = 35;  // leftback
+int servo1Pin = 35;  // leftfront
+int servo2Pin = 36;  // leftback
 int servo3Pin = 37;  // rightfront
 int servo4Pin = 38;  // rightback
 int servo5Pin = 39;  // head
@@ -54,6 +54,7 @@ float input_ang(int x, float y) {
   return Bang;
 }
 
+// not used
 void servo(float AngE1, float AngE2, float AngE3, float AngE4, int timewalk, int servo_delay) {
   if (timewalk < 1) {
     Serial.println("servo timewalk error!");
@@ -83,14 +84,15 @@ void MoveInit() {
   servo2.attach(servo2Pin, minUs, maxUs);
   servo3.attach(servo3Pin, minUs, maxUs);
   servo4.attach(servo4Pin, minUs, maxUs);
-  // servo5.attach(servo5Pin, minUs, maxUs);
+  servo5.attach(servo5Pin, minUs, maxUs);
 
   // get osang value from preferences
   osang[1] = preferences.getInt("LFAngle", osang[1]);
   osang[2] = preferences.getInt("LBAngle", osang[2]);
   osang[3] = preferences.getInt("RFAngle", osang[3]);
   osang[4] = preferences.getInt("RBAngle", osang[4]);
-  for (int i = 0; i < 4; i++) {
+  osang[5] = preferences.getInt("HDAngle", osang[4]);
+  for (int i = 0; i < 5; i++) {
     AngS[i] = osang[i];
     Serial.print("osang");
     Serial.print(i);
@@ -112,6 +114,8 @@ void MoveReset() {
     servoRightFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(STEP_DELAY);
     servoLeftBack(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    delay(STEP_DELAY);
+    servoHead(0, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(STEP_DELAY);
 
   Serial.println("MoveReset servo5");
@@ -191,6 +195,24 @@ void servoRightBack(float ange, int timewalk, int servo_delay) {
   Serial.println("servoRightBack end!");
 }
 
+void servoHead(float ange, int timewalk, int servo_delay) {
+  if (timewalk < 1) {
+    Serial.println("servo timewalk error!");
+    return;
+  }
+  Serial.print("servoHead start: ang = ");
+  Serial.println(ange);
+  float angtmp = ange - AngS[5];
+  for (int i = 1; i <= timewalk; i++) {
+    // Serial.print("walk loop: ");
+    // Serial.println(i);
+    servo5.write(input_ang(5, AngS[5] + angtmp * i / timewalk));
+    delay(servo_delay);
+  }
+  AngS[5] = ange;
+  Serial.println("servoHead end!");
+}
+
 void MoveForward(int step_delay, int loop_num) {
   for (int i = 0; i < loop_num; i++) {
     Serial.print("MoveForward loop count:");
@@ -203,6 +225,8 @@ void MoveForward(int step_delay, int loop_num) {
     delay(step_delay);
     servoLeftBack(-15, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
+    servoHead(15, TIMES_WALK, SERVO_LOOP_DELAY);
+    delay(step_delay);
 
     servoLeftFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
@@ -211,6 +235,8 @@ void MoveForward(int step_delay, int loop_num) {
     servoRightFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
     servoLeftBack(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    delay(step_delay);
+    servoHead(0, TIMES_WALK, SERVO_LOOP_DELAY);
     delay(step_delay);
     // servo(15, 0, 0, 0, TIMES_WALK, SERVO_LOOP_DELAY);
     // servo(15, 0, 0, 15, TIMES_WALK, SERVO_LOOP_DELAY);

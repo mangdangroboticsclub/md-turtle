@@ -83,6 +83,8 @@ void testSingleServo(String text) {
     servoRightFront(ange, walktime, loop_delay);
   else if (text.startsWith("rightback"))
     servoRightBack(ange, walktime, loop_delay);
+  else if (text.startsWith("head"))
+    servoHead(ange, walktime, loop_delay);
   Serial.print(text);
   Serial.println("  end. ");
 }
@@ -182,7 +184,7 @@ void setup() {
         } else if (text == "reset") {
           MoveReset();
           continue;
-        } else if (text.startsWith("left") || text.startsWith("right")) {
+        } else if (text.startsWith("left") || text.startsWith("right") || text.startsWith("head")) {
           testSingleServo(text);
           continue;
         } else if (text.startsWith("servo")) {

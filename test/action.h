@@ -13,5 +13,6 @@ void servoLeftFront(float ange, int timewalk, int servo_delay);
 void servoLeftBack(float ange, int timewalk, int servo_delay);
 void servoRightFront(float ange, int timewalk, int servo_delay);
 void servoRightBack(float ange, int timewalk, int servo_delay);
+void servoHead(float ange, int timewalk, int servo_delay);
 
 #endif  // TTS_H
