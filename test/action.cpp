@@ -5,7 +5,9 @@
 
 #define TIMES_WALK 1
 #define SERVO_LOOP_DELAY 1
-#define STEP_DELAY 100
+#define STEP_DELAY 10
+#define INTERPOLATION_NUM1 (2*15+1)
+#define INTERPOLATION_NUM2 66
 
 Servo servo1;
 Servo servo2;
@@ -78,15 +80,10 @@ void MoveReset() {
   Serial.println("MoveReset start");
 
   servoLeftFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
-  delay(STEP_DELAY);
   servoRightBack(0, TIMES_WALK, SERVO_LOOP_DELAY);
-  delay(STEP_DELAY);
   servoRightFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
-  delay(STEP_DELAY);
   servoLeftBack(0, TIMES_WALK, SERVO_LOOP_DELAY);
-  delay(STEP_DELAY);
   servoHead(0, TIMES_WALK, SERVO_LOOP_DELAY);
-  delay(STEP_DELAY);
 
   Serial.println("MoveReset end");
 }
@@ -171,304 +168,67 @@ void servoHead(int ange, int timewalk, int servo_delay) {
   Serial.println("servoHead end!");
 }
 
-void smoothAngle(int angle1,int angle2,int timewalk,int nonlinear_flag) {
-  float delt[timewalk + 1];
-  float angles1[timewalk + 1];
-  float angles2[timewalk];
-  int k;
-  float temp[timewalk + 1];
-  for (int i = 0; i <= timewalk; i++){
-    delt[i] = - 1 + 1 / float(timewalk) * float(i);
-  }
-  //k is the parameter to control the nonlinear feature
-  if (nonlinear_flag == 1){k = 2;} else{k = 0;}
-  for (int i = 0; i <= timewalk; i++){
-    temp[i] = (1 + delt[i]) * exp(k * delt[i]);
-  }
-
-  for (int i = 0; i <= timewalk; i++){
-    angles1[i] = angle1 + temp[i] * (angle2 - angle1) / 2;
-  }
-
-  for (int i = 0; i <= timewalk - 1; i++){
-    angles2[i] = angle1 + angle2 - angles1[timewalk - 1 - i];
-  }
-
-  for (int i = 0; i <= 2 * timewalk ; i++){
-    if (i <= timewalk)
-    {
-      angles3[i] = angles1[i];
-    }
-    else
-    {
-      angles3[i] = angles2[i-timewalk-1];
-    }
+// simple forward movement
+void MoveForward(int step_delay, int loop_num) {
+  for (int i = 0; i < loop_num; i++) {
+    Serial.print("MoveForward loop count:");
+    Serial.println(i);
+    servoLeftFront(15, TIMES_WALK, SERVO_LOOP_DELAY);
+    servoRightBack(15, TIMES_WALK, SERVO_LOOP_DELAY);
+    servoRightFront(-15, TIMES_WALK, SERVO_LOOP_DELAY);
+    servoLeftBack(-15, TIMES_WALK, SERVO_LOOP_DELAY);
+    servoHead(15, TIMES_WALK, SERVO_LOOP_DELAY);
+    
+    delay(step_delay);
+    
+    servoLeftFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    servoRightBack(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    servoRightFront(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    servoLeftBack(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    servoHead(0, TIMES_WALK, SERVO_LOOP_DELAY);
+    
+    delay(step_delay);
   }
 }
 
-
-void MoveForward() {
-  int loop_times = 6;                        //loop times
-  int timewalk = 15;                         //interplotation times
-  int half_timewalk = int(timewalk / 2);
-  int MovementGroup8_offset = 130;           //servo middle position
-  int step_delay_1 = 2;                      //delay bewteen every servo
-  int step_delay_2 = 10;                     //delay bewteen every four servos
-  int init_front_angle = 40;                 //front leg middle position
-  int init_back_angle = -60;                 //back leg middle position
-  int nonlinear_flag = 0;                    //nonlinear flag,0 represent linear,1 represent nonlinear
-  int stoptime = 5;                          //every gait loop leg pause time
+// forward movement smoothly
+void smoothMoveForward(int loopNum) { 
+  unsigned char angle1_position_init[INTERPOLATION_NUM1] = {90, 90, 90, 90, 90, 90, 90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90,  90};
+  unsigned char angle2_position_init[INTERPOLATION_NUM1] = {90, 90, 91, 92, 93, 94, 94,  95,  96,  97,  98,  98,  99,  100, 101, 102, 102, 103, 104, 105, 106, 106, 107, 108, 109, 110, 111, 111, 112, 113, 114};
+  unsigned char angle3_position_init[INTERPOLATION_NUM1] = {90, 91, 93, 95, 96, 98, 100, 102, 103, 105, 107, 109, 110, 112, 114, 115, 117, 119, 121, 122, 124, 126, 128, 129, 131, 133, 135, 136, 138, 140, 141};
+  unsigned char angle4_position_init[INTERPOLATION_NUM1] = {90, 87, 85, 83, 81, 79, 77,  75,  73,  71,  69,  67,  65,  63,  60,  58,  56,  54,  52,  50,  48,  46,  44,  42,  40,  38,  36,  33,  31,  29,  27};
   
-  int LF_step1 = 20;                         //left front step forward angles
-  int LF_step2 = -40;                        //left front step backward angles
+  unsigned char angles1_tem[INTERPOLATION_NUM2] = {90, 88, 86, 84, 82, 80, 78, 76, 74, 72, 70, 68, 66, 64, 62, 62, 62, 62, 62, 62, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 48, 49, 51, 52, 54, 55, 56, 58, 59, 60, 62, 63, 65, 66, 67, 69, 70, 72, 73, 74, 76, 77, 78, 80, 81, 83, 84, 85, 87, 88, 90};
+  unsigned char angles2_tem[INTERPOLATION_NUM2] = {114, 115, 115, 116, 117, 118, 119, 119, 120, 121, 122, 123, 123, 124, 125, 126, 127, 127, 128, 129, 130, 131, 132, 132, 133, 134, 135, 136, 136, 137, 138, 138, 137, 137, 136, 136, 135, 135, 135, 134, 134, 133, 133, 132, 132, 131, 131, 131, 131, 131, 131, 131, 130, 129, 127, 126, 125, 124, 122, 121, 120, 119, 117, 116, 115, 114};
+  unsigned char angles3_tem[INTERPOLATION_NUM2] = {141, 140, 138, 136, 135, 133, 131, 129, 128, 126, 124, 122, 121, 119, 117, 115, 114, 112, 110, 109, 107, 105, 103, 102, 100, 98, 96, 95, 93, 91, 90, 90, 91, 93, 95, 97, 99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 117, 117, 117, 117, 117, 117, 119, 121, 122, 124, 126, 128, 129, 131, 133, 135, 136, 138, 140, 141};
+  unsigned char angles4_tem[INTERPOLATION_NUM2] = {27, 29, 30, 32, 33, 35, 36, 38, 39, 41, 42, 44, 45, 46, 48, 48, 48, 48, 48, 48, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 62, 61, 60, 58, 57, 56, 55, 54, 53, 51, 50, 49, 48, 47, 46, 45, 43, 42, 41, 40, 39, 38, 36, 35, 34, 33, 32, 31, 30, 28, 27};
   
-  int LB_step1 = 25;
-  int LB_step2 = -10;
-  
-  int RF_step1 = 35;
-  int RF_step2 = -40;
-  
-  int RB_step1 = 20;
-  int RB_step2 = -30;
-  
-  short angle1_position_init[1 + 2 * timewalk];
-  short angle2_position_init[1 + 2 * timewalk];
-  short angle3_position_init[1 + 2 * timewalk];
-  short angle4_position_init[1 + 2 * timewalk];
-  
-  short angle1_position_temp1[1 + 2 * half_timewalk];
-  short angle2_position_temp1[1 + 2 * half_timewalk];
-  short angle3_position_temp1[1 + 2 * half_timewalk];
-  short angle4_position_temp1[1 + 2 * half_timewalk];
-  
-  short angle1_position_temp2[1 + 2 * timewalk];
-  short angle2_position_temp2[1 + 2 * timewalk];
-  short angle3_position_temp2[1 + 2 * timewalk];
-  short angle4_position_temp2[1 + 2 * timewalk];
-  
-  short angle1_position_temp3[1 + 2 * half_timewalk];
-  short angle2_position_temp3[1 + 2 * half_timewalk];
-  short angle3_position_temp3[1 + 2 * half_timewalk];
-  short angle4_position_temp3[1 + 2 * half_timewalk];
-  
-  int LF_init = (260 - MovementGroup8_offset - init_front_angle - osang[0]) * 180 / 260;
-  int LF_position1 = (260 - MovementGroup8_offset - (init_front_angle + LF_step1) - osang[0]) * 180 / 260;
-  int LF_position2 = (260 - MovementGroup8_offset - (init_front_angle + LF_step2) - osang[0]) * 180 / 260;
-  
-  int LB_init = (MovementGroup8_offset - init_back_angle - osang[1]) * 180 / 260;
-  int LB_position1 = (MovementGroup8_offset - (init_back_angle + LB_step1) - osang[1]) * 180 / 260;
-  int LB_position2 = (MovementGroup8_offset - (init_back_angle + LB_step2) - osang[1]) * 180 / 260;
-  
-  int RF_init = (MovementGroup8_offset + init_front_angle + osang[2]) * 180 / 260;
-  int RF_position1 = (MovementGroup8_offset + (init_front_angle + RF_step1) + osang[2]) * 180 / 260;
-  int RF_position2 = (MovementGroup8_offset + (init_front_angle + RF_step2) + osang[2]) * 180 / 260;
-  
-  int RB_init = (260 - MovementGroup8_offset + init_back_angle + osang[3]) * 180 / 260;
-  int RB_position1 = (260 - MovementGroup8_offset + (init_back_angle + RB_step1) + osang[3]) * 180 / 260;
-  int RB_position2 = (260 - MovementGroup8_offset + (init_back_angle + RB_step2) + osang[3]) * 180 / 260;
-  
-  //init
-  smoothAngle(LF_init, LF_position2, timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * timewalk; i++){
-    angle1_position_init[i] = angles3[i];
+  //from calibration position to walk position
+  for (int j = 0; j < INTERPOLATION_NUM1; j++){
+    servo1.write( int(angle1_position_init[j]) - osang[0]);
+    servo2.write( int(angle2_position_init[j]) - osang[1]);
+    servo3.write( int(angle3_position_init[j]) + osang[2]);
+    servo4.write( int(angle4_position_init[j]) + osang[3]);
+    delay(STEP_DELAY);
   }
   
-  smoothAngle(LB_init, LB_position1, timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * timewalk; i++){
-    angle2_position_init[i] = angles3[i];
-  }
-  
-  smoothAngle(RF_init, RF_position1, timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * timewalk; i++){
-    angle3_position_init[i] = angles3[i];
-  }
-  
-  smoothAngle(RB_init, RB_position2, timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * timewalk; i++){
-    angle4_position_init[i] = angles3[i];
-  }
-
-  //left front
-  smoothAngle(LF_init, LF_position1, half_timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * half_timewalk; i++){
-    angle1_position_temp1[i] = angles3[i];
-  }
-  
-  smoothAngle(LF_position1, LF_position2, timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * timewalk; i++){
-    angle1_position_temp2[i] = angles3[i];
-  }
-  
-  smoothAngle(LF_position2, LF_init, half_timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * half_timewalk; i++){
-    angle1_position_temp3[i] = angles3[i];
-  }
-  
-  //left back
-  smoothAngle(LB_init, LB_position1, half_timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * half_timewalk; i++){
-    angle2_position_temp1[i] = angles3[i];
-  }
-  
-  smoothAngle(LB_position1, LB_position2, timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * timewalk; i++){
-    angle2_position_temp2[i] = angles3[i];
-  }
-  
-  smoothAngle(LB_position2, LB_init, half_timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * half_timewalk; i++){
-    angle2_position_temp3[i] = angles3[i];
-  }
-  
-  //right front
-  smoothAngle(RF_init, RF_position1, half_timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * half_timewalk; i++){
-    angle3_position_temp1[i] = angles3[i];
-  }
-  
-  smoothAngle(RF_position1, RF_position2, timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * timewalk; i++){
-    angle3_position_temp2[i] = angles3[i];
-  }
-  
-  smoothAngle(RF_position2, RF_init, half_timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * half_timewalk; i++){
-    angle3_position_temp3[i] = angles3[i];
-  }
-  
-  //right back
-  smoothAngle(RB_init, RB_position1, half_timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * half_timewalk; i++){
-    angle4_position_temp1[i] = angles3[i];
-  }
-  
-  smoothAngle(RB_position1, RB_position2, timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * timewalk; i++){
-    angle4_position_temp2[i] = angles3[i];
-  }
-  
-  smoothAngle(RB_position2, RB_init, half_timewalk, nonlinear_flag);
-  for (int i = 0 ; i <= 2 * half_timewalk; i++){
-    angle4_position_temp3[i] = angles3[i];
-  }
-  
-  //left front
-  int LF_loop_flag1 = 2 * half_timewalk;
-  int LF_loop_flag2 = 2 * half_timewalk + stoptime;
-  int LF_loop_flag3 = 2 * half_timewalk + stoptime + 2*half_timewalk+1 ;
-  int LF_loop_flag4 = 2 * half_timewalk + stoptime + 2*half_timewalk+1 + 2*timewalk+1;
-  short angles1_tem[LF_loop_flag4+1];
-  
-  for (int i = 0 ; i <= LF_loop_flag4; i ++){
-    if (i<= LF_loop_flag1){
-      angles1_tem[i] = angle1_position_temp3[i];
-
-    } else if((LF_loop_flag1 < i) & (i <= LF_loop_flag2)){
-      angles1_tem[i] = LF_init;
-
-    } else if ((LF_loop_flag2 < i) & ( i <=LF_loop_flag3 )){
-      angles1_tem[i] = angle1_position_temp1[i - LF_loop_flag2 - 1];
-
-    } else if (( LF_loop_flag3 < i) & (i <=LF_loop_flag4 )){
-      angles1_tem[i] = angle1_position_temp2[i - LF_loop_flag3 - 1];
+  //forward walk loop
+  for (int i = 0; i <= loopNum; i++){
+    for (int j = 0; j < INTERPOLATION_NUM2 ; j++){
+      servo1.write( int(angles1_tem[j]) - osang[0]);
+      servo2.write( int(angles2_tem[j]) - osang[1]);
+      servo3.write( int(angles3_tem[j]) + osang[2]);
+      servo4.write( int(angles4_tem[j]) + osang[3]);
+      delay(STEP_DELAY);
     }
   }
   
-  //left back
-  int LB_loop_flag1 = 2 * timewalk;
-  int LB_loop_flag2 = 2 * timewalk + 2 * half_timewalk + 1 ;
-  int LB_loop_flag3 = 2 * timewalk + 2 * half_timewalk + 1 + stoptime ;
-  int LB_loop_flag4 = 2 * timewalk + 2 * half_timewalk + 1 + stoptime + 2 * half_timewalk + 1;
-  short angles2_tem[LB_loop_flag4+1];
-  
-  for (int i = 0 ; i <= LB_loop_flag4; i ++){
-
-    if (i<= LB_loop_flag1){
-      angles2_tem[i] = angle2_position_temp2[i];
-
-    } else if((LB_loop_flag1 < i) & (i <= LB_loop_flag2)){
-      angles2_tem[i] = angle2_position_temp3[i - LB_loop_flag1 - 1];
-
-    } else if ((LB_loop_flag2 < i) & ( i <=LB_loop_flag3 )){
-      angles2_tem[i] = LB_init;
-
-    } else if (( LB_loop_flag3 < i) & (i <=LB_loop_flag4 )){
-      angles2_tem[i] = angle2_position_temp1[i - LB_loop_flag3 - 1];
-    }
+  //from walk position to calibration position
+  for (int j = 0; j < INTERPOLATION_NUM1; j++){
+    servo1.write(int(angle1_position_init[INTERPOLATION_NUM1 - 1 - j]) - osang[0]);
+    servo2.write(int(angle2_position_init[INTERPOLATION_NUM1 - 1 - j]) - osang[1]);
+    servo3.write(int(angle3_position_init[INTERPOLATION_NUM1 - 1 - j]) + osang[2]);
+    servo4.write(int(angle4_position_init[INTERPOLATION_NUM1 - 1 - j]) + osang[3]);
+    delay(STEP_DELAY);
   }
-  
-  //right front
-  int RF_loop_flag1 = 2 * timewalk;
-  int RF_loop_flag2 = 2 * timewalk + 2 * half_timewalk + 1 ;
-  int RF_loop_flag3 = 2 * timewalk + 2 * half_timewalk + 1 + stoptime ;
-  int RF_loop_flag4 = 2 * timewalk + 2 * half_timewalk + 1 + stoptime + 2 * half_timewalk + 1;
-  short angles3_tem[RF_loop_flag4+1];
-  
-  for (int i = 0 ; i <= RF_loop_flag4; i ++){
-
-    if (i<= RF_loop_flag1){
-      angles3_tem[i] = angle3_position_temp2[i];
-
-    } else if((RF_loop_flag1 < i) & (i <= RF_loop_flag2)){
-      angles3_tem[i] = angle3_position_temp3[i - RF_loop_flag1 - 1];
-
-    } else if ((RF_loop_flag2 < i) & ( i <=RF_loop_flag3 )){
-      angles3_tem[i] = RF_init;
-
-    } else if (( RF_loop_flag3 < i) & (i <=RF_loop_flag4 )){
-      angles3_tem[i] = angle3_position_temp1[i - RF_loop_flag3 - 1];
-    }
-  }
-  
-  //right back
-  int RB_loop_flag1 = 2 * half_timewalk;
-  int RB_loop_flag2 = 2 * half_timewalk + stoptime;
-  int RB_loop_flag3 = 2 * half_timewalk + stoptime + 2 * half_timewalk + 1 ;
-  int RB_loop_flag4 = 2 * half_timewalk + stoptime + 2 * half_timewalk + 1 + 2 * timewalk + 1;
-  short angles4_tem[RB_loop_flag4 + 1];
-  for (int i = 0 ; i <= RB_loop_flag4; i ++){
-
-    if (i<= RB_loop_flag1){
-      angles4_tem[i] = angle4_position_temp3[i];
-
-    } else if ((RB_loop_flag1 < i) & (i <= RB_loop_flag2)){
-      angles4_tem[i] = RB_init;
-
-    } else if ((RB_loop_flag2 < i) & ( i <=RB_loop_flag3 )){
-      angles4_tem[i] = angle4_position_temp1[i - RB_loop_flag2 - 1];
-
-    } else if ((RB_loop_flag3 < i) & (i <=RB_loop_flag4 )){
-      angles4_tem[i] = angle4_position_temp2[i - RB_loop_flag3 - 1];
-    }
-  }
-  
-  //init move
-  for (int j = 0; j <= 2 * timewalk; j++){
-    servo1.write(angle1_position_init[j]);
-    delay(step_delay_1);
-    servo2.write(angle2_position_init[j]);
-    delay(step_delay_1);
-    servo3.write(angle3_position_init[j]);
-    delay(step_delay_1);
-    servo4.write(angle4_position_init[j]);
-    delay(step_delay_1);
-  
-    delay(step_delay_2);
-  }
-
-  //forward loop
-  for (int i = 0; i <= loop_times; i++){
-    for (int j = 0; j <= RB_loop_flag4 ; j++){
-      servo1.write(angles1_tem[j]);
-      delay(step_delay_1);
-      servo2.write(angles2_tem[j]);
-      delay(step_delay_1);
-      servo3.write(angles3_tem[j]);
-      delay(step_delay_1);
-      servo4.write(angles4_tem[j]);
-      delay(step_delay_1);
-
-      delay(step_delay_2);
-    }
-  }  
 }

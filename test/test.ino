@@ -105,7 +105,6 @@ void setup() {
   unsigned long split_time = millis();
   int file_duration, cur_audio_time;
   Audio* audio = nullptr;
-  // Servo_Init();
   // MoveInit();
   // MoveReset();
   while (1) {
@@ -115,9 +114,25 @@ void setup() {
 
       if (text.length() > 0) {
         if (text.startsWith("forward")) {
-          MoveForward();
+          int index = text.indexOf(' ');
+          int index1 = text.indexOf(' ', index + 1);
+          // Serial.println(index1);
+          int index2 = text.indexOf(' ', index1 + 1);
+          // Serial.println(index2);
+
+          int step_delay = text.substring(index, index1).toInt();
+          int loop_num = text.substring(index1 + 1, index2).toInt();
+          
+          MoveForward(step_delay, loop_num);
           continue;
-        } else if (text == "init") {
+        } else if (text.startsWith("smoothforward")) {
+          int index = text.indexOf(' ');
+          int index1 = text.indexOf(' ', index + 1);
+
+          int loopNum = text.substring(index, index1).toInt();
+          smoothMoveForward(loopNum);
+          continue;
+        }  else if (text == "init") {
           MoveInit();
           continue;
         } else if (text == "reset") {
