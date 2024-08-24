@@ -158,6 +158,9 @@ void setup() {
         } else if (text == "reset") {
           MoveReset();
           continue;
+        } else if (text == "movementdance") {
+          MovementDance();
+          continue;
         } else if (text.startsWith("left") || text.startsWith("right") || text.startsWith("head")) {
           testSingleServo(text);
           continue;

@@ -251,3 +251,39 @@ void smoothMoveForward(int loopNum) {
     delay(STEP_DELAY);
   }
 }
+
+void MovementDance() {
+
+  int timewalk1 = 8;
+  int timewalk2 = 16;
+  int loop_times = 6;
+  int stepDelay = 30;
+
+  unsigned char LF_angle_slow[] = {110, 109, 108, 107, 105, 104, 102, 100,  98,  95,  92,  89,  85,  81,76,  70,  63,  57,  51,  47,  43,  39,  37,  34,  32,  31,  29,  28,27,  27,  26,  26,  25};
+  unsigned char LB_angle_slow[] = {160, 159, 157, 155, 153, 150, 148, 145, 142, 138, 134, 130, 126, 120,115, 109, 102,  96,  91,  87,  83,  81,  78,  77,  75,  74,  73,  72,71,  71,  70,  70,  70};
+  unsigned char RF_angle_slow[] = {69,  70,  71,  72,  74,  75,  77,  79,  81,  84,  87,  90,  94,  98, 103, 109, 116, 122, 128, 132, 136, 140, 142, 145, 147, 148, 150, 151,152, 152, 153, 153, 154};
+  unsigned char RB_angle_slow[] = {19,  20,  22,  24,  26,  29,  31,  34,  37,  41,  45,  49,  53,  59, 64,  70,  77,  83,  88,  92,  96,  98, 101, 102, 104, 105, 106, 107,108, 108, 109, 109, 109};
+
+  unsigned char LF_angle_fast[] = {110, 109, 108, 105, 100,  93,  81,  61,  25};
+  unsigned char LB_angle_fast[] = {160, 159, 157, 152, 145, 135, 121, 100,  70};
+  unsigned char RF_angle_fast[] = {69,  70,  71,  74,  79,  86,  98,  118, 154};
+  unsigned char RB_angle_fast[] = {19,  20,  22,  27,  34,  44,  58,  79,  109,};
+
+  for (int i = 0; i < loop_times; i++) {
+    for (int j = 0; j <= timewalk1; j++){
+      servo1.write(int(LF_angle_fast[j]) - osang[0]);
+      servo2.write(int(LB_angle_fast[j]) - osang[1]);
+      servo3.write(int(RF_angle_fast[j]) + osang[2]);
+      servo4.write(int(RB_angle_fast[j]) + osang[3]);
+      delay(stepDelay);
+    }
+
+    for (int j = 0; j <= 2 * timewalk2; j++){
+      servo1.write(int(LF_angle_slow[2 * timewalk2 - j]) - osang[0]);
+      servo2.write(int(LB_angle_slow[2 * timewalk2 - j]) - osang[1]);
+      servo3.write(int(RF_angle_slow[2 * timewalk2 - j]) + osang[2]);
+      servo4.write(int(RB_angle_slow[2 * timewalk2 - j]) + osang[3]);
+      delay(stepDelay);
+    }
+  }
+}

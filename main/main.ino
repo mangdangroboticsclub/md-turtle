@@ -60,6 +60,11 @@ void talk_loop() {
       Serial.println("raise hand");
       servoLeftFront(60, 1, 1);
       Serial.println("\n\n raise hand end\n");
+    } else if(int(input_text.indexOf("dance")) != -1) {
+        tts("OK!,let's dance!"); 
+        Serial.println("dance begin");
+        MovementDance();
+        Serial.println("\n\n dance end\n");
     }
 	else {
       String ai_text = llm_response(input_text);
