@@ -115,23 +115,7 @@ void setup() {
 
       if (text.length() > 0) {
         if (text.startsWith("forward")) {
-          int index = text.indexOf(' ');
-          int index1 = text.indexOf(' ', index + 1);
-          Serial.println(index1);
-          int index2 = text.indexOf(' ', index1 + 1);
-          Serial.println(index2);
-
-          int step_delay = 1000;
-          if (index > 0) step_delay = text.substring(index + 1, index1).toInt();
-          Serial.print("step_delay: ");
-          Serial.println(step_delay);
-
-          int loop_num = 5;
-          if (index1 > 0) loop_num = text.substring(index1 + 1, index2).toInt();
-          Serial.print("loop_num: ");
-          Serial.println(loop_num);
-
-          MoveForward(step_delay, loop_num);
+          MoveForward();
           continue;
         } else if (text == "init") {
           MoveInit();
