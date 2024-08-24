@@ -35,13 +35,13 @@ int angleOffset = 90;
 int input_ang(int x, int y) {
   switch (x) {
     case 0:
-      return 180 - angleOffset - y -osang[0];
+      return 90 - y -osang[0];
     case 1:
-      return angleOffset - y - osang[1];
+      return 90 - y - osang[1];
     case 2:
-      return angleOffset + y + osang[2];
+      return 90 + y + osang[2];
     case 3:
-      return 180 - angleOffset + y + osang[3];
+      return 90 + y + osang[3];
     case 4:
       return 180 - y;
   }
