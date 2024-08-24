@@ -1,3 +1,25 @@
+#
+# Copyright 2024 MangDang (www.mangdang.net) 
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Description: This Turtle Arduino project is based on MD Robot Starter Kit(ESP32S3 chipset), including 
+#      Generative AI
+#      TTS: Text to Speach
+#      STT: Speach to Text
+#
+#
+
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <FS.h>
@@ -10,7 +32,6 @@ const char* ssid = "Mangdang";
 const char* password = "mangdang";
 
 unsigned long cloud_start_time, gc_end_time, stt_end_time, ai_end_time, duration;  // for delay
-
 
 void talk_loop() {
   Serial.println("=================================Record start!=================================");
@@ -29,7 +50,18 @@ void talk_loop() {
       Serial.println("forward start");
       MoveForward(200, 3);
       Serial.println("\n\nForwarding\n");
-    } else {
+    }else if(int(input_text.indexOf("go")) != -1) {
+      tts("OK, let's go!"); 
+      Serial.println("smoothMoveForward");
+      smoothMoveForward(6);
+      Serial.println("\n\n smoothMoveForward end \n");
+    }else if(int(input_text.indexOf("hand")) != -1) {
+      tts("OK!"); 
+      Serial.println("raise hand");
+      servoLeftFront(60, 1, 1);
+      Serial.println("\n\n raise hand end\n");
+    }
+	else {
       String ai_text = llm_response(input_text);
       if (ai_text != "") {  // text to speech
         tts(ai_text);
@@ -67,7 +99,6 @@ void setup() {
   } else {
     Serial.println("WiFi Disconnected");
   }
-
   MoveInit();
   MoveReset();
 }
