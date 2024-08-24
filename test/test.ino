@@ -1,5 +1,4 @@
 #include <Audio.h>
-
 #include <WiFi.h>
 #include "Audio.h"
 #include "action.h"
@@ -63,7 +62,7 @@ void testSingleServo(String text) {
   int index3 = text.indexOf(' ', index2 + 1);
   Serial.println(index3);
 
-  float ange = text.substring(index, index1).toFloat();
+  int ange = text.substring(index, index1).toInt();
   Serial.print("ange: ");
   Serial.println(ange);
 
@@ -85,50 +84,6 @@ void testSingleServo(String text) {
     servoRightBack(ange, walktime, loop_delay);
   else if (text.startsWith("head"))
     servoHead(ange, walktime, loop_delay);
-  Serial.print(text);
-  Serial.println("  end. ");
-}
-
-void testAllServo(String text) {
-  int index = text.indexOf(' ');
-  int index1 = text.indexOf(' ', index + 1);
-  Serial.println(index1);
-  int index2 = text.indexOf(' ', index1 + 1);
-  Serial.println(index2);
-  int index3 = text.indexOf(' ', index2 + 1);
-  Serial.println(index3);
-  int index4 = text.indexOf(' ', index3 + 1);
-  Serial.println(index4);
-  int index5 = text.indexOf(' ', index4 + 1);
-  Serial.println(index5);
-  int index6 = text.indexOf(' ', index5 + 1);
-  Serial.println(index6);
-
-  float ange1 = text.substring(index + 1, index1).toFloat();
-  Serial.print("ange1: ");
-  Serial.println(ange1);
-
-  float ange2 = text.substring(index1 + 1, index2).toFloat();
-  Serial.print("ange2: ");
-  Serial.println(ange2);
-
-  float ange3 = text.substring(index2 + 1, index3).toFloat();
-  Serial.print("ange3: ");
-  Serial.println(ange3);
-
-  float ange4 = text.substring(index3 + 1, index4).toFloat();
-  Serial.print("ange4: ");
-  Serial.println(ange4);
-
-  int walktime = text.substring(index4 + 1, index5).toInt();
-  Serial.print("walktime: ");
-  Serial.println(walktime);
-
-  int loop_delay = text.substring(index5 + 1, index6).toInt();
-  Serial.print("loop_delay: ");
-  Serial.println(loop_delay);
-
-  servo(ange1, ange2, ange3, ange4, walktime, loop_delay);
   Serial.print(text);
   Serial.println("  end. ");
 }
@@ -156,7 +111,7 @@ void setup() {
   while (1) {
     if (Serial.available() > 0) {
       String text = Serial.readStringUntil('\n');
-      text.trim();  // 移除输入字符串两端的空格和换行符
+      text.trim(); 
 
       if (text.length() > 0) {
         if (text.startsWith("forward")) {
@@ -187,10 +142,7 @@ void setup() {
         } else if (text.startsWith("left") || text.startsWith("right") || text.startsWith("head")) {
           testSingleServo(text);
           continue;
-        } else if (text.startsWith("servo")) {
-          testAllServo(text);
-          continue;
-        }
+        } 
         if (audio) {
           audio->stopSong();
           delete audio;
