@@ -1,4 +1,4 @@
-#
+/*
 # Copyright 2024 MangDang (www.mangdang.net) 
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
 #      Test all servoes to move
 #      Two move forward functions
 #
-#
+*/
 
 #include <action.h>
 #include <Arduino.h>
