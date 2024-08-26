@@ -161,6 +161,104 @@ void setup() {
         } else if (text == "movementdance") {
           MovementDance();
           continue;
+        } else if (text.startsWith("smoothMoveForwardDegug")) {
+
+          int index = text.indexOf(' ');
+          int index1 = text.indexOf(' ', index + 1);
+          Serial.println(index1);
+          int index2 = text.indexOf(' ', index1 + 1);
+          Serial.println(index2);
+          int index3 = text.indexOf(' ', index2 + 1);
+          Serial.println(index3);
+          int index4 = text.indexOf(' ', index3 + 1);
+          Serial.println(index4);
+          int index5 = text.indexOf(' ', index4 + 1);
+          Serial.println(index5);
+          int index6 = text.indexOf(' ', index5 + 1);
+          Serial.println(index6);
+          int index7 = text.indexOf(' ', index6 + 1);
+          Serial.println(index7);
+          int index8 = text.indexOf(' ', index7 + 1);
+          Serial.println(index8);
+          int index9 = text.indexOf(' ', index8 + 1);
+          Serial.println(index9);
+          int index10 = text.indexOf(' ', index9 + 1);
+          Serial.println(index10);
+          int index11 = text.indexOf(' ', index10 + 1);
+          Serial.println(index11);
+          int index12 = text.indexOf(' ', index11 + 1);
+          Serial.println(index12);
+          int index13 = text.indexOf(' ', index12 + 1);
+          Serial.println(index13);
+
+          float an1 = 30;
+          if (index > 0) an1 = text.substring(index + 1, index1).toFloat();
+          Serial.print("an1: ");
+          Serial.println(an1);
+
+          float an2 = -30;
+          if (index1 > 0) an2 = text.substring(index1 + 1, index2).toFloat();
+          Serial.print("an2: ");
+          Serial.println(an2);
+
+          float an3 = 30;
+          if (index2 > 0) an3 = text.substring(index2 + 1, index3).toFloat();
+          Serial.print("an3: ");
+          Serial.println(an3);
+
+          float an4 = -30;
+          if (index3 > 0) an4 = text.substring(index3 + 1, index4).toFloat();
+          Serial.print("an4: ");
+          Serial.println(an4);
+
+          float an5 = -30;
+          if (index4 > 0) an5 = text.substring(index4 + 1, index5).toFloat();
+          Serial.print("an5: ");
+          Serial.println(an5);
+
+          float an6 = 30;
+          if (index5 > 0) an6 = text.substring(index5 + 1, index6).toFloat();
+          Serial.print("an6: ");
+          Serial.println(an6);
+
+          float an7 = -30;
+          if (index6 > 0) an7 = text.substring(index6 + 1, index7).toFloat();
+          Serial.print("an7: ");
+          Serial.println(an7);
+
+          float an8 = 30;
+          if (index7 > 0) an8 = text.substring(index7 + 1, index8).toFloat();
+          Serial.print("an8: ");
+          Serial.println(an8);
+
+          float an9 = 0;
+          if (index8 > 0) an9 = text.substring(index8 + 1, index9).toFloat();
+          Serial.print("an9: ");
+          Serial.println(an9);
+
+          float an10 = 0;
+          if (index9 > 0) an10 = text.substring(index9 + 1, index10).toFloat();
+          Serial.print("an10: ");
+          Serial.println(an10);
+
+          int timewalk_8 = 20;
+          if (index10 > 0) timewalk_8 = text.substring(index10 + 1, index11).toInt();
+          Serial.print("timewalk_8: ");
+          Serial.println(timewalk_8);
+
+          int step_delay_input_1 = 10;
+          if (index11 > 0) step_delay_input_1 = text.substring(index11 + 1, index12).toInt();
+          Serial.print("step_delay_input_1: ");
+          Serial.println(step_delay_input_1);
+
+          int stoptime_input = 10;
+          if (index12 > 0) stoptime_input = text.substring(index12 + 1, index13).toInt();
+          Serial.print("stoptime_input: ");
+          Serial.println(stoptime_input);
+
+          
+          smoothMoveForwardDegug(an1,an2,an3,an4,an5,an6,an7,an8,an9,an10,timewalk_8,step_delay_input_1,stoptime_input);
+          continue;
         } else if (text.startsWith("left") || text.startsWith("right") || text.startsWith("head")) {
           testSingleServo(text);
           continue;
