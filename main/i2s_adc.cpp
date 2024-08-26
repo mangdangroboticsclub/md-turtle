@@ -131,11 +131,11 @@ void listSPIFFS(void) {
       String fileName = file.name();
       Serial.print("  " + fileName);
       // File path can be 31 characters maximum in SPIFFS
-      int spaces = 33 - fileName.length();  // Tabulate nicely
+      int spaces = 33 - fileName.length();
       if (spaces < 1) spaces = 1;
       while (spaces--) Serial.print(" ");
       String fileSize = (String)file.size();
-      spaces = 10 - fileSize.length();  // Tabulate nicely
+      spaces = 10 - fileSize.length();
       if (spaces < 1) spaces = 1;
       while (spaces--) Serial.print(" ");
       Serial.println(fileSize + " bytes");
@@ -193,8 +193,8 @@ void record() {
     .slot_cfg = I2S_STD_MSB_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_MONO),
     .gpio_cfg = {
       .mclk = I2S_GPIO_UNUSED,
-      .bclk = GPIO_NUM_11,
-      .ws = GPIO_NUM_10,
+      .bclk = GPIO_NUM_10,
+      .ws = GPIO_NUM_11,
       .dout = I2S_GPIO_UNUSED,
       .din = GPIO_NUM_4,
       .invert_flags = {

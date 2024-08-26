@@ -132,15 +132,15 @@ String generateJsonString(String text) {
 String llm_response(String transcript) {
   HTTPClient _http;
 
-  Serial.println("开始发送 HTTP POST 请求...");
+  Serial.println("Start sending HTTP POST request...");
   _http.begin(apiURL);
   _http.addHeader("Content-Type", "application/json");
   _http.addHeader("Authorization", "Bearer " + String(accessToken));
 
-  // 构建 JSON 数据
+  // Constrct JSON data
   // String jsonData = "{\"contents\": {\"role\": \"user\", \"parts\": [{\"text\": \"" + transcript + "\"}]}}";
   String jsonData = generateJsonString(transcript);
-  // Serial.print("发送的 JSON 数据: ");
+  // Serial.print("Sent JSON data: ");
   // Serial.println(jsonData);
 
   int httpResponseCode = _http.POST(jsonData);
@@ -148,9 +148,9 @@ String llm_response(String transcript) {
   String geminiResponseText = "";
   if (httpResponseCode > 0) {
     String response = _http.getString();
-    // Serial.print("HTTP 响应代码: ");
+    // Serial.print("HTTP repond code: ");
     // Serial.println(httpResponseCode);
-    // Serial.print("响应内容: ");
+    // Serial.print("Responded data: ");
     // Serial.println(response);
 
     int startIndex = 0;
@@ -164,10 +164,10 @@ String llm_response(String transcript) {
       startIndex = endIndex + 1;
     }
 
-    Serial.print("组合后的文本: ");
+    Serial.print("Combined text: ");
     Serial.println(geminiResponseText);
   } else {
-    Serial.print("请求失败，HTTP 响应代码: ");
+    Serial.print("Request failed, HTTP respond code: ");
     Serial.println(httpResponseCode);
   }
 

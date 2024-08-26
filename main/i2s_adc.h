@@ -1,9 +1,9 @@
 #ifndef I2S_ADC_H
 #define I2S_ADC_H
 
-#define I2S_WS 10
+#define I2S_WS 11
 #define I2S_SD 4
-#define I2S_SCK 11
+#define I2S_SCK 10
 #define I2S_PORT I2S_NUM_0
 #define I2S_SAMPLE_RATE (16000)
 #define I2S_SAMPLE_BITS (16)

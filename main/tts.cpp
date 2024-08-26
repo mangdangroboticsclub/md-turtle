@@ -46,9 +46,8 @@ void tts(String text) {
   Audio* audio = new Audio();
   // Serial.println("new an Audio instance.");
   audio->setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-  //audio.setVolume(21); // 设置音量级别 (0-100)
+  //audio.setVolume(21); // SET volume (0-100)
 
-  // 编码文本并过滤掉非字母数字字符
   text.replace("\\n", "");  // delete all "\n"
   // Serial.print("final text: ");
   // Serial.println(text);
@@ -56,12 +55,7 @@ void tts(String text) {
   // Serial.print("encoded text: ");
   // Serial.println(encodedText);
 
-  // 生成音频 URL
   String audioURL = baseURL + encodedText;
-  // Serial.print("生成的URL: ");
-  // Serial.println(audioURL);
-
-  // // 连接并播放音频
   audio->connecttohost(audioURL.c_str());
   unsigned long start_time = millis();
   int max_duration = 400 * countWords(text);

@@ -54,6 +54,7 @@ int timewalk2 = 50;
 int timeLT = 300;  // time for left turn
 int timeST = 100;  // time for right turn
 
+int angles3[2*100+1];
 
 // set servo#x to move to y position
 int input_ang(int x, int y) {

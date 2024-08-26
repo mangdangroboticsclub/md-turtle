@@ -46,11 +46,11 @@ void talk_loop() {
 
   if (input_text != "") {  // ai response
     if (int(input_text.indexOf("come")) != -1) {
-      tts("OK, my master!");
+      tts("OK, my Guardian!");
       Serial.println("forward start");
-      MoveForward(200, 3);
-      Serial.println("\n\nForwarding\n");
-    }else if(int(input_text.indexOf("go")) != -1) {
+        MoveForward(90, 6);
+        Serial.println("\n\n forward end\n");
+    } else if(int(input_text.indexOf("go")) != -1) {
       tts("OK, let's go!"); 
       Serial.println("smoothMoveForward");
       smoothMoveForward(6);
