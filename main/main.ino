@@ -28,10 +28,13 @@
 #include "tts.h"
 #include "action.h"
 
+String accessToken;
+
 const char* ssid = "Mangdang";
 const char* password = "mangdang";
 
 unsigned long cloud_start_time, gc_end_time, stt_end_time, ai_end_time, duration;  // for delay
+
 
 void talk_loop() {
   Serial.println("=================================Record start!=================================");
@@ -104,6 +107,19 @@ void setup() {
   } else {
     Serial.println("WiFi Disconnected");
   }
+  HTTPClient http;
+    const char* tokenURL = "https://storage.googleapis.com/mangdang_open_audio/token.txt";
+    http.begin(tokenURL); 
+    int httpCode = http.GET(); 
+
+    if (httpCode == 200) {
+        accessToken = http.getString();
+        Serial.println("Token fetched successfully: " + accessToken);
+    } else {
+        Serial.print("Failed to fetch token, HTTP code: ");
+        Serial.println(httpCode);
+    }
+    http.end();
   MoveInit();
   MoveReset();
 }
