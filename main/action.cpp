@@ -41,11 +41,11 @@ Preferences preferences;
 
 int minUs = 500;
 int maxUs = 2500;
-int servo1Pin = 35;  // leftfront
-int servo2Pin = 36;  // leftback
-int servo3Pin = 37;  // rightfront
-int servo4Pin = 38;  // rightback
-int servo5Pin = 39;  // head
+int servo1Pin = 38;  // leftfront
+int servo2Pin = 39;  // leftback
+int servo3Pin = 40;  // rightfront
+int servo4Pin = 41;  // rightback
+int servo5Pin = 42;  // head
 int ang[]   = { 0, 0, 0, 0, 0 };
 int osang[] = { 0, -3, -3, 2, 0 };  //offset angle
 int AngS[]  = { 0, 0, 0, 0, 0 };  // the current angle pos

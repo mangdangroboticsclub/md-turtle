@@ -30,8 +30,12 @@ To run this project, you will need the following hardware components:
 ### Adding Required Libraries
 
 3. **Install Audio and Servo Libraries:**
-   - Go to `Sketch > Include Library > Add .ZIP Library` and select `ESP32-audioI2S-master.zip`.
-   - Then, go to `Sketch > Include Library > Manage Libraries`, search for and install `ESP32Servo`.
+   - Download this repository by pressing "<>Code" at this page them press "Download ZIP".
+   - Extract the zip file from the downloaded package.
+   - Go to `Sketch > Include Library > Add .ZIP Library` and select `ESP32-audioI2S-master.zip` from the "resource" folder in the zip file "md-turtle" you just extracted.
+   - Delete `ESP32-audioI2S-master.zip` from the extracted folder after importing it.
+   - Then, go to `Sketch > Include Library > Manage Libraries`, search for and install `ESP32Servo`, the version "3.0.5" is recommended.
+   - If you see any notifications for updates, press "install all". 
 
 ### Configure Board Settings in Arduino IDE
 
@@ -45,22 +49,26 @@ To run this project, you will need the following hardware components:
 
 ### Preparing the Code
 
-5. **Setting Access Token:**
-   - In the `cloud.cpp` file, replace the placeholder in `const char* accessToken = “SAMPLE TOKEN HERE”;` with your actual access token.
-   - To obtain an access token, log in to the Google Cloud Platform console, open the `cloud shell` from the top left of the page, and execute:
+5. **Setting Access Token (IF YOU ARE USING YOUR OWN ACCOUNT:)**
+   - In the `cloud.cpp` file, remove "//" in the code  `const char* accessToken = “SAMPLE TOKEN HERE”;` then replace the placeholder in with your actual access token.
+   - To obtain an access token, open the `cloud shell` from this link https://cloud.google.com/shell, press go to console and log into the account, then execute:
      ```bash
      gcloud auth application-default print-access-token
      ```
    - Copy and paste the token back into your code.
+   - Press "Edit" in arduino ide top toolbar and then "Replace in Files", replace "mangdang_voice" with your own bucket name, then replace "modern-rex-420404 with your own project id of google cloud.
 
 ### Uploading the Code
 
 6. **Upload the Project:**
-   - Once all settings are configured and the access token is set, upload the code to the ESP32-S3 board by clicking on the upload button in Arduino IDE.
+   - Press "file" in arduino ide then "Open", look for the package you downloaded and extracted from the previous step, select "main" then "main.ino".
+   - Once all settings are configured and the access token is set, upload the code to the ESP32-S3 board by clicking on the upload button in Arduino IDE. If you see the progress reaches 100%, you are done.
+   - Press "Tools" in arudino ide and then "Serial Monitor" to checkout the output of the turtle.
 
 ## Running the Project
 
 After uploading the code, the ESP32-S3 will process audio input through the microphone, interact via the Google Gemini model, and control the servo motors accordingly.
+You can talk to the Gemini AI freely during when the serial monitor shows that recording is started, and if your speech contains words among "come, go, dance, hand", the motion of turtle will be triggered.
 
 ## Troubleshooting
 
