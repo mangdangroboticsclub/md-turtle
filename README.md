@@ -68,7 +68,7 @@ To run this project, you will need the following hardware components:
 ## Running the Project
 
 After uploading the code, the ESP32-S3 will process audio input through the microphone, interact via the Google Gemini model, and control the servo motors accordingly.
-You can talk to the Gemini AI freely during when the serial monitor shows that recording is started, and if your speech contains words among "come, go, dance, hand", the motion of turtle will be triggered.
+You can talk to the Gemini AI freely during when the serial monitor shows that recording is started, and if your speech contains words among "come", or "go", or "dance", or "hand", the motion of turtle will be triggered.
 
 ## Troubleshooting
 
@@ -76,11 +76,3 @@ If you encounter issues, please check the following:
 - Ensure all library dependencies are correctly installed.
 - Verify board settings match the requirements stated above.
 - Check the serial monitor for any error messages after uploading the code.
-
-## Contributing
-
-Contributions to this project are welcome! Please fork the repository and submit a pull request with your improvements.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
