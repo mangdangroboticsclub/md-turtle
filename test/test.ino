@@ -30,6 +30,12 @@ const char* password = "mangdang";
 #define I2S_BCLK 16  // Bit Clock
 #define I2S_LRC 15   // Left/Right Clock
 
+// led
+#include <Adafruit_NeoPixel.h>
+#define PIN 47
+#define NUMPIXELS 8
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
 const String baseURL = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=";
 // String audioFormat = "&c=mp3&f=16khz_8bit_mono";
 
@@ -108,8 +114,63 @@ void testSingleServo(String text) {
   Serial.println("  end. ");
 }
 
+void init_led() {
+  pixels.begin();
+}
+
+void reset_led() {
+  pixels.clear();
+  pixels.show();
+}
+
+void show_led(uint16_t n, uint8_t r, uint8_t g, uint8_t b) {
+  pixels.setPixelColor(n, r, g, b);
+  pixels.show();
+}
+
+void testLed(String text) {
+  int index = text.indexOf(' ');
+  int index1 = text.indexOf(' ', index + 1);
+  Serial.println(index1);
+  int index2 = text.indexOf(' ', index1 + 1);
+  Serial.println(index2);
+  int index3 = text.indexOf(' ', index2 + 1);
+  Serial.println(index3);
+  int index4 = text.indexOf(' ', index3 + 1);
+  Serial.println(index4);
+
+  String cmd = text.substring(index, index1);
+  Serial.print("cmd: ");
+  Serial.println(cmd);
+
+  uint8_t r = (uint8_t)(text.substring(index1 + 1, index2).toInt());
+  Serial.print("r: ");
+  Serial.println(r);
+
+  uint8_t g = (uint8_t)(text.substring(index2 + 1, index3).toInt());
+  Serial.print("g: ");
+  Serial.println(g);
+
+  uint8_t b = (uint8_t)(text.substring(index3 + 1, index4).toInt());
+  Serial.print("b: ");
+  Serial.println(b);
+
+  if (text.startsWith("led init"))
+    init_led();
+  else if (text.startsWith("led reset"))
+    reset_led();
+  else if (text.startsWith("led show")) {
+    for (int i = 0; i < NUMPIXELS; i++) {
+      show_led(i, r, g, b);
+    }
+  }
+  Serial.print(text);
+  Serial.println("  end. ");
+}
+
 void setup() {
   Serial.begin(115200);
+
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -130,7 +191,7 @@ void setup() {
   while (1) {
     if (Serial.available() > 0) {
       String text = Serial.readStringUntil('\n');
-      text.trim(); 
+      text.trim();
 
       if (text.length() > 0) {
         if (text.startsWith("forward")) {
@@ -142,7 +203,7 @@ void setup() {
 
           int step_delay = text.substring(index, index1).toInt();
           int loop_num = text.substring(index1 + 1, index2).toInt();
-          
+
           MoveForward(step_delay, loop_num);
           continue;
         } else if (text.startsWith("smoothforward")) {
@@ -152,7 +213,7 @@ void setup() {
           int loopNum = text.substring(index, index1).toInt();
           smoothMoveForward(loopNum);
           continue;
-        }  else if (text == "init") {
+        } else if (text == "init") {
           MoveInit();
           continue;
         } else if (text == "reset") {
@@ -256,13 +317,16 @@ void setup() {
           Serial.print("stoptime_input: ");
           Serial.println(stoptime_input);
 
-          
-          smoothMoveForwardDegug(an1,an2,an3,an4,an5,an6,an7,an8,an9,an10,timewalk_8,step_delay_input_1,stoptime_input);
+
+          smoothMoveForwardDegug(an1, an2, an3, an4, an5, an6, an7, an8, an9, an10, timewalk_8, step_delay_input_1, stoptime_input);
           continue;
         } else if (text.startsWith("left") || text.startsWith("right") || text.startsWith("head")) {
           testSingleServo(text);
           continue;
-        } 
+        } else if (text.startsWith("led")) {
+          testLed(text);
+          continue;
+        }
         if (audio) {
           audio->stopSong();
           delete audio;
