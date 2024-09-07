@@ -30,6 +30,15 @@ const char* password = "mangdang";
 #define I2S_BCLK 16  // Bit Clock
 #define I2S_LRC 15   // Left/Right Clock
 
+#include <Adafruit_NeoPixel.h>//led1
+#ifdef __AVR__
+ #include <avr/power.h>
+#endif//led1 end
+
+#define PIN 47//led2
+#define NUMPIXELS 8
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);//led2 end
+
 const String baseURL = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=";
 // String audioFormat = "&c=mp3&f=16khz_8bit_mono";
 
@@ -110,6 +119,23 @@ void testSingleServo(String text) {
 
 void setup() {
   Serial.begin(115200);
+
+  #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000) //led3
+    clock_prescale_set(clock_div_1);
+  #endif
+  pixels.begin();
+  for(int i=0; i<NUMPIXELS; i++) {
+    pixels.setPixelColor(i, pixels.Color(150, 0, 0));
+    pixels.show();
+    delay(300);
+  }
+  for(int i=0; i<NUMPIXELS; i++) {
+    pixels.setPixelColor(i, pixels.Color(0, 150, 0));
+    pixels.show();
+  }
+  delay(1000);
+  pixels.clear();//led3 end
+
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {

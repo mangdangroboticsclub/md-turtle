@@ -41,13 +41,13 @@ Preferences preferences;
 
 int minUs = 500;
 int maxUs = 2500;
-int servo1Pin = 35;  // leftfront
-int servo2Pin = 36;  // leftback
-int servo3Pin = 37;  // rightfront
-int servo4Pin = 38;  // rightback
-int servo5Pin = 39;  // head
+int servo1Pin = 38;  // leftfront
+int servo2Pin = 39;  // leftback
+int servo3Pin = 40;  // rightfront
+int servo4Pin = 41;  // rightback
+int servo5Pin = 42;  // head
 int ang[]   = { 0, 0, 0, 0, 0 };
-int osang[] = { 0, -3, -3, 2, 0 };  //offset angle
+int osang[] = { 5, 5, 6, 3, 0 };  //offset angle
 int AngS[]  = { 0, 0, 0, 0, 0 };  // the current angle pos
 int timewalk1 = 100;
 int timewalk2 = 50;
@@ -329,7 +329,7 @@ void smoothAngle(float angle1,float angle2,int timewalk,float nonlinear_flag) {
 // float an9, float an10,  // init position for the front 2 legs and back legs
 // int timewalk_8, interpolation point number
 // float step_delay_input_1, int stoptime_input  NO need to optimize
-void MovementGroup8(float an1, float an2, float an3, float an4, float an5,float an6,float an7,float an8,float an9, float an10, int timewalk_8, float step_delay_input_1, int stoptime_input) {
+void smoothMoveForwardDegug(float an1, float an2, float an3, float an4, float an5,float an6,float an7,float an8,float an9, float an10, int timewalk_8, float step_delay_input_1, int stoptime_input) {
   int loop_times = 6;
   int timewalk = timewalk_8;
   int half_timewalk = int(timewalk/2.0);
