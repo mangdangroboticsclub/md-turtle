@@ -329,7 +329,7 @@ void smoothAngle(float angle1,float angle2,int timewalk,float nonlinear_flag) {
 // float an9, float an10,  // init position for the front 2 legs and back legs
 // int timewalk_8, interpolation point number
 // float step_delay_input_1, int stoptime_input  NO need to optimize
-void MovementGroup8(float an1, float an2, float an3, float an4, float an5,float an6,float an7,float an8,float an9, float an10, int timewalk_8, float step_delay_input_1, int stoptime_input) {
+void smoothMoveForwardDegug(float an1, float an2, float an3, float an4, float an5,float an6,float an7,float an8,float an9, float an10, int timewalk_8, float step_delay_input_1, int stoptime_input) {
   int loop_times = 6;
   int timewalk = timewalk_8;
   int half_timewalk = int(timewalk/2.0);
