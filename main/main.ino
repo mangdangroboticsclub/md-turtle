@@ -28,6 +28,12 @@
 #include "tts.h"
 #include "action.h"
 
+// led
+#include <Adafruit_NeoPixel.h>
+#define PIN 47
+#define NUMPIXELS 8
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
 String accessToken;
 
 const char* ssid = "Mangdang";
@@ -89,6 +95,15 @@ void talk_task(void* args) {
 }
 
 
+void led_show(uint8_t r, uint8_t g, uint8_t b) {
+  pixels.clear();
+  for (int i = 0; i < NUMPIXELS; i++) {
+      pixels.setPixelColor(i, r, g, b);
+    }
+  pixels.show();
+}
+
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting setup...");
@@ -104,6 +119,8 @@ void setup() {
   if (WiFi.status() == WL_CONNECTED) {
     // xTaskCreate(record_task, "record_task", 1024 * 8, NULL, 1, NULL);
     // record_task((void*)NULL);
+    pixels.begin();
+    led_show(150, 0, 0);
   } else {
     Serial.println("WiFi Disconnected");
   }
