@@ -345,7 +345,7 @@ void setup() {
 
         // String audioURL = baseURL + encodedText;
         String audioURL = text;
-        Serial.println("生成的URL: " + audioURL);
+        Serial.println("URL: " + audioURL);
         audio->connecttohost(audioURL.c_str());
         file_duration = audio->getAudioFileDuration();
         Serial.print("File Duration: ");
@@ -358,7 +358,7 @@ void setup() {
     }
 
     if (audio)
-      audio->loop();  // 必须反复调用以保持音频播放
+      audio->loop();
     delay(1);
 
     unsigned long curtime = millis();
@@ -376,22 +376,22 @@ void setup() {
 void loop() {
 }
 
-void audio_id3data(const char* info) {  // 当找到ID3数据时调用
+void audio_id3data(const char* info) {
   Serial.print("id3data: ");
   Serial.println(info);
 }
 
-void audio_eof_mp3(const char* info) {  // 当MP3文件播放结束时调用
+void audio_eof_mp3(const char* info) {
   Serial.print("eof_mp3: ");
   Serial.println(info);
 }
 
-void audio_eof_speech(const char* info) {  // 当speech播放结束时调用
+void audio_eof_speech(const char* info) {
   Serial.print("audio_eof_speech: ");
   Serial.println(info);
 }
 
-void audio_eof_stream(const char* info) {  // 当stream播放结束时调用
+void audio_eof_stream(const char* info) {
   Serial.print("audio_eof_stream: ");
   Serial.println(info);
 }
