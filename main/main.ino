@@ -43,7 +43,9 @@ unsigned long cloud_start_time, gc_end_time, stt_end_time, ai_end_time, duration
 
 void init_token() {
   HTTPClient http;
-  const char* tokenURL = "https://storage.googleapis.com/mangdang_open_audio/token.txt";
+  unsigned long cur_time = millis();
+  String tokenURL = "https://storage.googleapis.com/mangdang_open_audio/token.txt?time=" + String(cur_time);
+  Serial.println(tokenURL);
   http.begin(tokenURL);
   int httpCode = http.GET();
 
