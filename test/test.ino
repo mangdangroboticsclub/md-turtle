@@ -180,7 +180,7 @@ void setup() {
   Serial.println("WiFi connected");
 
 
-  Serial.println("请输入要转换成语音的文字，然后按回车键：");
+  Serial.println("input cmd：");
 
   int internal = 5000;
   unsigned long split_time = millis();

@@ -41,6 +41,21 @@ const char* password = "mangdang";
 
 unsigned long cloud_start_time, gc_end_time, stt_end_time, ai_end_time, duration;  // for delay
 
+void init_token() {
+  HTTPClient http;
+  const char* tokenURL = "https://storage.googleapis.com/mangdang_open_audio/token.txt";
+  http.begin(tokenURL);
+  int httpCode = http.GET();
+
+  if (httpCode == 200) {
+    accessToken = http.getString();
+    Serial.println("Token fetched successfully: " + accessToken);
+  } else {
+    Serial.print("Failed to fetch token, HTTP code: ");
+    Serial.println(httpCode);
+  }
+  http.end();
+}
 
 void talk_loop() {
   Serial.println("=================================Record start!=================================");
@@ -57,25 +72,24 @@ void talk_loop() {
     if (int(input_text.indexOf("come")) != -1) {
       tts("OK, my Guardian!");
       Serial.println("forward start");
-        MoveForward(90, 6);
-        Serial.println("\n\n forward end\n");
-    } else if(int(input_text.indexOf("go")) != -1) {
-      tts("OK, let's go!"); 
+      MoveForward(90, 6);
+      Serial.println("\n\n forward end\n");
+    } else if (int(input_text.indexOf("go")) != -1) {
+      tts("OK, let's go!");
       Serial.println("smoothMoveForward");
       smoothMoveForward(6);
       Serial.println("\n\n smoothMoveForward end \n");
-    }else if(int(input_text.indexOf("hand")) != -1) {
-      tts("OK!"); 
+    } else if (int(input_text.indexOf("hand")) != -1) {
+      tts("OK!");
       Serial.println("raise hand");
       servoLeftFront(60, 1, 1);
       Serial.println("\n\n raise hand end\n");
-    } else if(int(input_text.indexOf("dance")) != -1) {
-        tts("OK!,let's dance!"); 
-        Serial.println("dance begin");
-        MovementDance();
-        Serial.println("\n\n dance end\n");
-    }
-	else {
+    } else if (int(input_text.indexOf("dance")) != -1) {
+      tts("OK!,let's dance!");
+      Serial.println("dance begin");
+      MovementDance();
+      Serial.println("\n\n dance end\n");
+    } else {
       String ai_text = llm_response(input_text);
       if (ai_text != "") {  // text to speech
         tts(ai_text);
@@ -98,8 +112,8 @@ void talk_task(void* args) {
 void led_show(uint8_t r, uint8_t g, uint8_t b) {
   pixels.clear();
   for (int i = 0; i < NUMPIXELS; i++) {
-      pixels.setPixelColor(i, r, g, b);
-    }
+    pixels.setPixelColor(i, r, g, b);
+  }
   pixels.show();
 }
 
@@ -121,22 +135,11 @@ void setup() {
     // record_task((void*)NULL);
     pixels.begin();
     led_show(150, 0, 0);
+    init_token();
   } else {
     Serial.println("WiFi Disconnected");
   }
-  HTTPClient http;
-    const char* tokenURL = "https://storage.googleapis.com/mangdang_open_audio/token.txt";
-    http.begin(tokenURL); 
-    int httpCode = http.GET(); 
 
-    if (httpCode == 200) {
-        accessToken = http.getString();
-        Serial.println("Token fetched successfully: " + accessToken);
-    } else {
-        Serial.print("Failed to fetch token, HTTP code: ");
-        Serial.println(httpCode);
-    }
-    http.end();
   MoveInit();
   MoveReset();
 }
