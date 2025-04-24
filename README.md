@@ -67,8 +67,24 @@ To run this project, you will need the following hardware components:
 
 ## Running the Project
 
+### Test Project
+We can use the commands to test the functions based on the following steps.
+   - Set your own WiFi name and password.
+   - Upload the software to your Turtle.
+   - init and reset.
+   - Calibrate if the servo positions are not right.
+   - Run the commands to test.
+
+![TestGuide](resource/TurtleGuide.jpg)
+
+You can also refer to the video guide here[here](https://youtu.be/b_6Tn-mvRYQ).
+
+### Main Project
+
 After uploading the code, the ESP32-S3 will process audio input through the microphone, interact via the Google Gemini model, and control the servo motors accordingly.
 You can talk to the Gemini AI freely during when the serial monitor shows that recording is started, and if your speech contains words among "come", or "go", or "dance", or "hand", the motion of turtle will be triggered.
+
+Attention: We didn't find the official Gemini SDK for esp32 when we built this project last year. The cloud feedback delay is about 5s(too long). It seems there is official SDK and the delay time is much shorter, we plan to update the solution in the future to make it better.
 
 ## Troubleshooting
 
