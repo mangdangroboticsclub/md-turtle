@@ -6,15 +6,17 @@
 #include <SPIFFS.h>
 #include "params.h"
 
-//onst char* accessToken = "SAMPLE_TOKEN_HERE";
+const char* myAccessToken = "SAMPLE_TOKEN_HERE";
 
 // STT Config
-const char* bucketName = "mangdang_voice";
-const char* audioContent = "gs://mangdang_voice/audio.wav";
-const char* gcAdd = "https://storage.googleapis.com/upload/storage/v1/b/mangdang_voice/o?uploadType=media&name=audio.wav";
+const String bucketName("mangdang_voice"); // replace with yours
+const String audioContent = "gs://" + bucketName + "/audio.wav";
+const String gcAdd = "https://storage.googleapis.com/upload/storage/v1/b/" + bucketName + "/o?uploadType=media&name=audio.wav";
 
 // Gemini API Config
-const char* apiURL = "https://us-central1-aiplatform.googleapis.com/v1/projects/modern-rex-420404/locations/us-central1/publishers/google/models/gemini-1.5-flash:streamGenerateContent?alt=sse";
+const String gcpProjectName("modern-rex-420404/"); // replace with yours
+const String gcpLocation("us-central1"); // replace with yours
+const String apiURL = "https://europe-west1-aiplatform.googleapis.com/v1/projects/" + gcpProjectName + "/locations/" + gcpLocation + "/publishers/google/models/gemini-1.5-flash-002:streamGenerateContent?alt=sse";
 
 
 void uploadFile() {
@@ -29,11 +31,14 @@ void uploadFile() {
 
   HTTPClient _http;
 
-  // String url = "https://storage.googleapis.com/upload/storage/v1/b/" + String(_bucketName) + "/o?uploadType=media&name=audio.wav";
   Serial.print("Connecting to URL: ");
   Serial.println(gcAdd);
-  _http.begin(gcAdd);
-  _http.addHeader("Authorization", "Bearer " + String(accessToken));
+  if(!_http.begin(gcAdd)){
+    Serial.println("Failed to begin http request with gcAdd");
+    file.close();
+    return;
+  }
+  _http.addHeader("Authorization", "Bearer " + String(myAccessToken));
   _http.addHeader("Content-Type", "application/octet-stream");
 
   Serial.println("Sending POST request...");
@@ -53,19 +58,19 @@ void uploadFile() {
   Serial.println("File closed and HTTP connection ended");
 }
 
-const String speechRequestData = "{\"config\": {\"encoding\":\"LINEAR16\",\"languageCode\":\"en-US\",\"enableWordTimeOffsets\":false},\"audio\":{\"uri\":\"gs://mangdang_voice/audio.wav\"}}";
+const String speechRequestData = "{\"config\": {\"encoding\":\"LINEAR16\",\"languageCode\":\"en-US\",\"enableWordTimeOffsets\":false},\"audio\":{\"uri\":\"" + audioContent + "\"}}";
 String speechToText() {
   Serial.println("Speech to text start.");
   HTTPClient _http;
 
   _http.begin("https://speech.googleapis.com/v1/speech:recognize");
   _http.addHeader("Content-Type", "application/json");
-  _http.addHeader("Authorization", "Bearer " + String(accessToken));
+  _http.addHeader("Authorization", "Bearer " + String(myAccessToken));
   _http.addHeader("User-Agent", "PostmanRuntime/7.40.0");
   _http.addHeader("Accept", "*/*");
   _http.addHeader("Accept-Encoding", "gzip, deflate, br");
   _http.addHeader("Connection", "keep-alive");
-  _http.addHeader("x-goog-user-project", "modern-rex-420404");
+  _http.addHeader("x-goog-user-project", gcpProjectName);
 
   Serial.println("Speech request.");
   Serial.println("Speech request post start.");
@@ -103,7 +108,7 @@ String generateJsonString(String text) {
          "\"contents\": ["
          "{"
          "\"role\": \"USER\","
-         "\"parts\": { \"text\": \"Now, you are a small female robo turtle, your name is Amy. You will be a helpful AI assistent. Your LLM api is connected to STT and TTS models so you are able to hear the user.\" }"
+         "\"parts\": { \"text\": \"Now, you are a small female robot turtle, your name is Amy. You will be a helpful AI assistant. Your LLM api is connected to STT and TTS models so you are able to hear the user.\" }"
          "},"
          "{"
          "\"role\": \"MODEL\","
@@ -135,7 +140,7 @@ String llm_response(String transcript) {
   Serial.println("Start sending HTTP POST request...");
   _http.begin(apiURL);
   _http.addHeader("Content-Type", "application/json");
-  _http.addHeader("Authorization", "Bearer " + String(accessToken));
+  _http.addHeader("Authorization", "Bearer " + String(myAccessToken));
 
   // Constrct JSON data
   // String jsonData = "{\"contents\": {\"role\": \"user\", \"parts\": [{\"text\": \"" + transcript + "\"}]}}";

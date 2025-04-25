@@ -137,7 +137,7 @@ void setup() {
     // record_task((void*)NULL);
     pixels.begin();
     led_show(150, 0, 0);
-    init_token();
+    //init_token();
   } else {
     Serial.println("WiFi Disconnected");
   }

@@ -29,12 +29,13 @@ To run this project, you will need the following hardware components:
 
 ### Adding Required Libraries
 
-3. **Install Audio and Servo Libraries:**
+3. **Install Audio, Servo and LED Libraries:**
    - Download this repository by pressing "<>Code" at this page them press "Download ZIP".
    - Extract the zip file from the downloaded package.
    - Go to `Sketch > Include Library > Add .ZIP Library` and select `ESP32-audioI2S-master.zip` from the "resource" folder in the zip file "md-turtle" you just extracted.
    - Delete `ESP32-audioI2S-master.zip` from the extracted folder after importing it.
    - Then, go to `Sketch > Include Library > Manage Libraries`, search for and install `ESP32Servo`, the version "3.0.5" is recommended.
+   - Similarly, go to `Sketch > Include Library > Manage Libraries`, search for and install `Adafruit NeoPixel`, the version "1.12.3" is recommended.
    - If you see any notifications for updates, press "install all". 
 
 ### Configure Board Settings in Arduino IDE
@@ -50,7 +51,7 @@ To run this project, you will need the following hardware components:
 ### Preparing the Code
 
 5. **Setting Access Token (IF YOU ARE USING YOUR OWN ACCOUNT:)**
-   - In the `cloud.cpp` file, remove "//" in the code  `const char* accessToken = “SAMPLE TOKEN HERE”;` then replace the placeholder in with your actual access token.
+   - In the `cloud.cpp` file, remove "//" in the code  `const char* myAccessToken = “SAMPLE TOKEN HERE”;` then replace the placeholder in with your actual access token.
    - To obtain an access token, open the `cloud shell` from this link https://cloud.google.com/shell, press go to console and log into the account, then execute:
      ```bash
      gcloud auth application-default print-access-token
@@ -58,9 +59,20 @@ To run this project, you will need the following hardware components:
    - Copy and paste the token back into your code.
    - Press "Edit" in arduino ide top toolbar and then "Replace in Files", replace "mangdang_voice" with your own bucket name, then replace "modern-rex-420404 with your own project id of google cloud.
 
+   - Replace the WiFi ssid and password with yours
+
+
+### Prepare your GCP account/project
+
+6. **Enable AI features in your GCP account**
+   - Enable VERTEX AI API in the GCP interface.
+   - Enable SPEACH API in the GCP interface.
+
+Note that those features are comming at a cost (about a few cents), so have a look at [GCP billing quotes](https://cloud.google.com/billing/quotas) if you want to set a limit.
+
 ### Uploading the Code
 
-6. **Upload the Project:**
+7. **Upload the Project:**
    - Press "file" in arduino ide then "Open", look for the package you downloaded and extracted from the previous step, select "main" then "main.ino".
    - Once all settings are configured and the access token is set, upload the code to the ESP32-S3 board by clicking on the upload button in Arduino IDE. If you see the progress reaches 100%, you are done.
    - Press "Tools" in arudino ide and then "Serial Monitor" to checkout the output of the turtle.
